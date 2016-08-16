@@ -1,0 +1,23 @@
+- name: install memcache
+  become: yes
+  apt: pkg=memcached
+
+- name: remove existing memcache config
+  become: yes
+  file: dest=/etc/memcached.conf state=absent
+
+- name: remove existing memcache service
+  become: yes
+  file: dest=/etc/systemd/system/memcached.service state=absent
+
+- name: write memcached.conf
+  become: yes
+  template: src=memcached.conf dest=/etc/memcached.conf mode=0644
+
+- name: write memcached.service
+  become: yes
+  template: src=memcached.service dest=/etc/systemd/system/memcached.service mode=0644
+
+- name: enable memcached.service
+  become: yes
+  service: name=memcached enabled=yes state=started

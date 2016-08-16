@@ -1,0 +1,3 @@
+- name: install ntp for clock synchronization
+  become: yes
+  apt: pkg=ntp

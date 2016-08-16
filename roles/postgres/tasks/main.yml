@@ -1,0 +1,46 @@
+- name: install Postgres
+  become: yes
+  apt: pkg={{ item }}
+  with_items:
+    - postgresql-{{ postgresql.version }}
+    - postgresql-contrib-{{ postgresql.version }}
+    - postgresql-{{ postgresql.version }}-postgis-{{ postgresql.postgis_version }}
+    - postgresql-server-dev-{{ postgresql.version }}
+    - libpq-dev
+    - python-psycopg2
+
+- name: ensure user has access to database
+  become: yes
+  become_user: postgres
+  postgresql_user: name=vagrant
+    role_attr_flags=CREATEDB,SUPERUSER
+
+- name: create databases
+  become: yes
+  become_user: postgres
+  postgresql_db: name={{ item }}
+  with_items:
+    - django
+    - django2
+    - geodjango
+    - geodjango2
+
+- name: enable postgis extension
+  become: yes
+  become_user: postgres
+  shell: "psql {{ item }} -c 'CREATE EXTENSION IF NOT EXISTS postgis; CREATE EXTENSION IF NOT EXISTS postgis_topology;'"
+  with_items:
+    - geodjango
+    - geodjango2
+
+- name: Update kernel params
+  become: yes
+  sysctl: name=kernel.shmmax value=268435456 state=present
+
+- name: Install PostgreSQL config file
+  become: yes
+  template: src=postgresql.conf
+            dest=/etc/postgresql/{{ postgresql.version }}/main/postgresql.conf
+            owner=postgres group=postgres
+  notify:
+    - restart postgresql

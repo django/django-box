@@ -1,0 +1,41 @@
+- name: install MySQL
+  become: yes
+  apt: pkg={{ item }}
+  with_items:
+    - mysql-server-5.7
+    - libmysqlclient-dev
+    - python-mysqldb
+
+- name: ensure user has access to database
+  become: yes
+  mysql_user: name=django password=secret priv=*.*:ALL
+
+- name: create databases
+  become: yes
+  mysql_db: name={{ item }}
+  with_items:
+    - django
+    - django2
+    - django_gis
+    - django2_gis
+
+- name: Install MySQL config file
+  become: yes
+  template: src=my.cnf
+            dest=/etc/mysql/my.cnf
+            owner=root group=root
+  notify:
+    - restart mysql
+
+- name: load timezone definitions
+  shell: mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u django -psecret mysql
+
+- name: create MySQL apparmor config
+  become: yes
+  copy: src=usr.sbin.mysqld dest=/etc/apparmor.d/usr.sbin.mysqld
+  notify:
+    - restart apparmor
+
+- name: Disable regular MySQL service
+  become: yes
+  service: name=mysql enabled=no

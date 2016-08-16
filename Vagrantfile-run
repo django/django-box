@@ -1,27 +1,21 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant.configure("2") do |config|
-  config.vm.box = "bento/ubuntu-16.04"
+Vagrant::Config.run do |config|
+  config.vm.box = "djangobox-1.10"
+  #config.vm.box_url = "https://www.djangoproject.com/m/vms/djangocore-box-1.1.box"
   config.vm.host_name = "djangobox"
+
   config.ssh.forward_agent = true
 
   # Shared folders
   hosthome = "#{ENV['HOME']}/"
+  utilize_nfs = (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) == nil
+
   config.vm.synced_folder "../django", "/django", type: "nfs"
+  config.vm.synced_folder "../sandbox", "/sandbox", type: "nfs"
   config.vm.synced_folder hosthome, "/home/vagrant/.hosthome"
 
   # Host-only network required to use NFS shared folders
-  config.vm.network "private_network", ip: "1.2.3.4"
-
-  config.vm.provider "virtualbox" do |vb|
-    vb.name = "djangobox"
-    vb.gui = false
-    vb.memory = 2048
-    vb.cpus = 2
-  end
-
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "playbook.yml"
-  end
+  config.vm.network :hostonly, "1.2.3.4"
 end

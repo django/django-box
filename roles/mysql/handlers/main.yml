@@ -1,0 +1,8 @@
+---
+- name: restart mysql
+  become: yes
+  service: name=mysql state=restarted
+
+- name: restart apparmor
+  become: yes
+  service: name=apparmor state=restarted

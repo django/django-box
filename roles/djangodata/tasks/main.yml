@@ -1,0 +1,56 @@
+- name: copy Django test settings
+  become: yes
+  copy:
+    src: "./roles/djangodata/files/"
+    dest: "{{ user_home }}djangodata/"
+    owner: "{{ django_user }}"
+    group: "{{ django_user }}"
+
+- name: Add MaxMind apt repo (for libmaxminddb-dev)
+  become: yes
+  apt_repository: repo='ppa:maxmind/ppa'
+  register: maxmind_repo_added
+
+- name: reload apt
+  become: yes
+  apt: update_cache=yes
+  when: maxmind_repo_added.changed
+
+- name: install Geospatial libraries
+  become: yes
+  apt: pkg={{ item }}
+  with_items:
+    - binutils
+    - gdal-bin
+    - libproj-dev
+    - libgeoip-dev
+    - libmaxminddb-dev
+    - libsqlite3-mod-spatialite
+
+- name: Make GeoIP directory
+  become: yes
+  file: path={{ user_home }}geoip/ state=directory mode=0755
+
+- name: download MaxMind GeoIP databases
+  become: yes
+  get_url:
+    url={{ item }}
+    dest={{ user_home }}geoip/
+  with_items:
+    - http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz
+    - http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+    - http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
+    - http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz
+  register: updated_maxmind_dbs
+
+- name: Unzip databases
+  become: yes
+  shell: gunzip -kf {{ user_home }}geoip/*.gz
+  when: updated_maxmind_dbs|changed
+
+- name: install Node.js for JavaScript tests
+  become: yes
+  apt: pkg={{ item }}
+  with_items:
+    - npm
+    - nodejs-legacy

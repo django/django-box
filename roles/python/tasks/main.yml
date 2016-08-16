@@ -1,0 +1,88 @@
+- name: install enchant (for spelling check)
+  become: yes
+  apt: pkg=enchant
+
+- name: add snake repo signing key
+  become: yes
+  apt_key: id=DB82666C
+           url=http://keyserver.ubuntu.com:11371/pks/lookup?op=get&search=0x5BB92C09DB82666C
+           state=present
+
+- name: add snake repository
+  become: yes
+  apt_repository: repo='ppa:fkrull/deadsnakes' state=present
+
+- name: install Python
+  become: yes
+  apt: pkg=python{{ item }}
+  with_items: '{{ python_versions }}'
+
+- name: install Python development libraries
+  become: yes
+  apt: pkg=python{{ item }}-dev
+  with_items: '{{ python_versions }}'
+
+- name: install setuptools
+  become: yes
+  apt: pkg=python-setuptools
+
+- name: download pip
+  get_url: url=https://bootstrap.pypa.io/get-pip.py dest=/tmp
+
+- name: install pip
+  command: python{{ item }} /tmp/get-pip.py
+  become: yes
+  with_items: '{{ python_versions }}'
+
+- name: install virtualenv
+  become: yes
+  pip: name=virtualenv
+
+- name: install wheel
+  become: yes
+  pip: name=wheel executable=pip{{ item }}
+  with_items: '{{ python_versions }}'
+
+- name: update setuptools
+  become: yes
+  pip: name=setuptools state=latest executable=pip{{ item }}
+  with_items: '{{ python_versions }}'
+
+- name: install extra packages required by Python dependencies
+  become: yes
+  apt: pkg={{ item }}
+  with_items:
+    - libffi-dev   # for bcrypt
+    - libjpeg-dev  # for Pillow
+    - zlib1g-dev   # for Pillow
+
+- name: install virtualenvwrapper to allow workon shortcut
+  become: yes
+  apt: pkg=virtualenvwrapper
+
+- name: create virtual environments for each python
+  pip:
+    requirements: "{{ user_home }}djangodata/requirements/py{{ item | int }}.txt"
+    virtualenv: "{{ user_home}}/.virtualenvs/py{{ item }}"
+    virtualenv_python: "python{{ item }}"
+  with_items: '{{ python_versions }}'
+
+- name: link test settings modules to each virtualenv
+  file:
+    src: "{{ user_home }}djangodata/test_{{ item.1 }}.py"
+    dest: "{{ user_home }}.virtualenvs/py{{ item.0 }}/lib/python{{ item.0 }}/site-packages/test_{{ item.1 }}.py"
+    state: link
+  with_nested:
+    - '{{ python_versions }}'
+    - '{{ database_versions }}'
+
+- name: create aliases for executing tests on each python/database combination
+  lineinfile:
+    dest: "{{ user_home}}.profile"
+    line: >
+        alias runtests{{ item.0 }}-{{ item.1 }}='PYTHONPATH=/django
+        {{ user_home }}/.virtualenvs/py{{ item.0 }}/bin/python
+        /django/tests/runtests.py --settings=test_{{ item.1 }}'
+  with_nested:
+    - '{{ python_versions }}'
+    - '{{ database_versions }}'
