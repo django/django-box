@@ -1,13 +1,15 @@
-djangocore-box: A virtual machine for running the Django core test suite
-========================================================================
+django-box: A virtual machine for running the Django core test suite
+====================================================================
 
-The djangocore-box is a virtual machine (VM) containing all the programs and
-libraries required for running the Django core test suite in multiple different
-environments. Every supported version of Python (2.4, 2.5, 2.6, 2.7 and 3.3) is
-pre-installed as well as every supported database backend (SQLite, Spatialite,
-MySQL, PostgreSQL and PostGIS — Oracle is coming soon), all the GeoDjango
-dependencies and a number of third-party components such as Memcached and
-Python libraries like Sphinx, the Python Imaging Library, Textile and Markdown.
+Forked from djangocore-box (https://github.com/jphalip/djangocore-box)
+
+The django-box is a virtual machine (VM), based on Ubuntu 16.04, containing all
+the programs and libraries required for running the Django core test suite in
+multiple different environments.
+
+Every supported version of Python is pre-installed, along with all supported
+database backends, except for Oracle. Third party libraries like Memcached,
+Sphinx, and Pillow are also provided.
 
 This is particularly useful to anybody interested in contributing to Django
 core without having to go through the trouble of installing and configuring all
@@ -19,28 +21,8 @@ Preparation
 ### Software installation
 
 First of all, you need to install the latest versions of
-[Vagrant](http://downloads.vagrantup.com/) and
+[Vagrant](https://www.vagrantup.com/downloads.html) and
 [VirtualBox](https://www.virtualbox.org/wiki/Downloads) on your host machine.
-
-
-### Adding SSH keys to ssh-agent
-
-SSH-Agent will allow you to share the ssh keys on your host machine with the
-VM. This will then allow you to authenticate to remote servers, like github
-for example, from inside the VM.
-
-First, check if your keys are added to ssh-agent:
-
-    ssh-add -l
-
-If you don't have any keys, or the key you want available to the VM is not
-listed, you can add your key by running the following:
-
-    ssh-add <path_to_key>
-
-Example:
-
-    ssh-add ~/.ssh/id_rsa
 
 Booting the VM
 --------------
@@ -50,32 +32,28 @@ for commands to run inside the VM.
 
 Setup the initial directory layout:
 
-    (host) $ mkdir djangocore
-    (host) $ cd djangocore
-    (host) $ git clone git@github.com:django/django.git  # or replace django/django.git by <your username>/django.git if you have your own fork
-    (host) $ git clone git@github.com:jphalip/djangocore-box.git
-    (host) $ mkdir sandbox
+    (host) $ cd projects
+    (host) $ git clone git@github.com:django/django.git
+    (host) $ git clone git@github.com:django/django-box.git
 
 Then, either:
 
 * If you have not already downloaded the box file separately, then run the
   following commands to boot the machine.
 
-        (host) $ cd djangocore-box
+        (host) $ cd django-box
         (host) $ vagrant up
 
-  This will automatically download the VM, which is about _1GB_ in size (be
+  This will automatically download the VM, which is about _1.5GB_ in size (be
   warned if you have a low bandwitdh Internet connection) and then boot it up.
-  The download will only occur the first time you run `vagrant up`. Every
-  subsequent times, it will just boot the VM, which only takes about 30
-  seconds.
+  The download will only occur the first time you run `vagrant up`, as the image
+  is saved.
 
-* Or, if you have already downloaded the box file separately (say, for example
-  someone gave it to you via a flash drive), then run the following command in
-  order to import the box into vagrant and boot up the VM:
+* Or, if you have already downloaded the box file separately, then run the
+  following command in order to import the box into vagrant and boot up the VM:
 
-        (host) $ vagrant box add djangocore-box-1.1 path/to/your/local/copy/of/djangocore-box-1.1.box
-        (host) $ cd djangocore-box
+        (host) $ vagrant box add django-box-1.10 path/to/django-box-1.10.box
+        (host) $ cd django-box
         (host) $ vagrant up
 
   `vagrant box add` will copy the box file to `~/.vagrant.d/boxes`, so you may
@@ -87,70 +65,73 @@ administrator password (the same that you use for logging into your host
 machine). This is required so that Vagrant can setup the NFS shared folders.
 
 Once the VM is up and running, type the following command to SSH into the VM
-(still from inside the `djangocore-box/` folder):
+(still from inside the `django-box/` folder):
 
     (host) $ vagrant ssh
 
 Once inside the VM, you can run the tests by typing any of the pre-defined
-aliases: `runtests{2.4,2.5,2.6,2.7,3.3}-{sqlite,mysql,postgresql,spatialite,postgis}`.
-For example:
+aliases. For example:
 
-    (vm) $ runtests2.6-mysql
-    (vm) $ runtests2.7-spatialite gis
-    (vm) $ runtests2.5-postgresql auth forms
+    (vm) $ runtests2.7-mysql
+    (vm) $ runtests3.4-spatialite gis_tests
+    (vm) $ runtests3.5-postgresql admin_widgets --selenium chrome,firefox
 
-Building the VM from scratch
-----------------------------
+Supported commands
+------------------
 
-You probably don't need to build the VM from scratch, but if you really want
-it, the steps are still pretty simple. First, rename the file `Vagrantfile` to
-a temporary name (e.g. `Vagrantfile-backup`) and then rename the file
-`Vagrantfile-build` to `Vagrantfile`. Then run `vagrant up`. The automatic
-build process will take about an hour. Use that time to do other work, browse
-the web or go out for a nice stroll in the park!
+```
+runtests2.7-mysql          runtests3.4-mysql          runtests3.5-mysql
+runtests2.7-mysql_gis      runtests3.4-mysql_gis      runtests3.5-mysql_gis
+runtests2.7-postgis        runtests3.4-postgis        runtests3.5-postgis
+runtests2.7-postgres       runtests3.4-postgres       runtests3.5-postgres
+runtests2.7-spatialite     runtests3.4-spatialite     runtests3.5-spatialite
+runtests2.7-sqlite3        runtests3.4-sqlite3        runtests3.5-sqlite3
+```
 
-Sandbox directory
------------------
+Building a new version
+----------------------
 
-In some cases, you will want to expose test projects, or test code to your host
-machine. The `sandbox` directory on the host is mapped to the `/sandbox`
-directory on the vagrant managed VM.
+To upgrade or alter the original box, you'll need to recreate it. You'll need to
+have Ansible 2.1 or greater installed, and django in a folder beside the
+django-box project as described above.
 
-Any projects or code you create in `/sandbox` will be available in the
-`djangocore/sandbox` directory.
+Make any required changes to the Ansible roles, and then create the box with:
+
+```
+VAGRANT_VAGRANTFILE=Vagrantfile-build vagrant up
+```
+
+The automatic build process will take about an hour. If the new build should be
+saved, then you can package the output:
+
+```
+VAGRANT_VAGRANTFILE=Vagrantfile-build vagrant package \
+    --output django-box-DJANGO-VERSION.box
+
+vagrant box add django-box-DJANGO-VERSION.box --name django-box-DJANGO-VERSION
+```
 
 Notes about the VM configuration
 --------------------------------
 
 Inside the VM, the `/django` folder is shared with the host and points to the
-git clone that was created in the steps above. The repository clone for the
-djangocore-box itself is also in a shared folder at `/djangocore-box`. This way
-you can edit Django's code using your favorite editor/IDE from your host
-machine and run the tests from inside the VM.
+git clone that was created in the steps above. This way you can edit Django's
+code using your favorite editor from your host machine and run the tests from
+inside the VM. The repository clone for the django-box itself is also in a
+shared folder at `/vagrant`.
 
-The various versions of python are installed in the `/opt` folder. The
-virtualenvs are named `py{2.4,2.5,2.6,2.7,3.3}` and are installed under
-`/home/vagrant/.virtualenvs/`.
+`virtualenvwrapper` is installed so you may run, for example:
 
-`virtualenvwrapper` is also installed so you may run, for example:
+    (vm) $ workon py3.5
 
-    (vm) $ workon py3.3
+The test settings are available in `/home/vagrant/djangodata/test_*.py`. These
+files are available to each virtualenv via symlinks.
 
-You should be able to push commits to your fork of django on github directly
-from inside the VM, as the SSH and git configuration files inside the VM are
-automatically symlinked to the corresponding files on your host machine. You
-may push those commits from the host machine too.
-
-The test settings are available in `/djangocore-box/test_settings/test_*.py`.
-These files are available in every virtualenv via symlinks.
-
-Firefox is pre-installed so that Django's selenium tests can be run in headless
+Chrome is pre-installed so that Django's selenium tests can be run in headless
 mode in a virtual display (with the id `:99`). For example, you may run a
 specific test like so:
 
-    (vm) $ runtests2.6-sqlite admin_inlines.tests.SeleniumFirefoxTests --selenium
-
-The VM is based on a Ubuntu 12.04 LTS 64 bits distribution.
+    (vm) $ runtests2.7-sqlite3 admin_widgets --selenium chrome
 
 Building the documentation
 --------------------------
@@ -194,16 +175,10 @@ Vagrant command tips
 
     `(host) $ vagrant provision`
 
-- More information is available in the [Vagrant documentation](http://vagrantup.com/v1/docs/index.html).
-
-
-Todo
-----
-
-- Install the Oracle backend.
+- More information is available in the [Vagrant documentation](https://www.vagrantup.com/docs/).
 
 Credits
 -------
 
-djangocore-box was authored by [Julien Phalip](https://twitter.com/julienphalip)
-and [other contributors](AUTHORS).
+django-box was originally authored by [Julien Phalip](https://twitter.com/julienphalip)
+and [other contributors](AUTHORS) as djangocore-box.

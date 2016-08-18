@@ -1,3 +1,11 @@
+1.10 - Aug 16, 2016
+==================
+
+- Targets libraries and packages compatible with Django 1.10.
+- Based the image on bento/ubuntu-16.04.
+- Replaced the Chef and shell provisioners with Ansible roles.
+- Updated to Vagrant configuration version 2.
+
 1.1 - April 17, 2013
 ====================
 

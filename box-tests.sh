@@ -25,3 +25,5 @@ runtests3.5-postgresql auth_tests
 runtests3.5-mysql auth_tests
 
 runtests2.7-sqlite3 admin_widgets --selenium chrome
+
+set +x
