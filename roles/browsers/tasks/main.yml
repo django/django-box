@@ -2,6 +2,15 @@
   become: yes
   apt: pkg=xvfb
 
+- name: Install Xvfb systemd script
+  become: yes
+  copy: src=xvfb.service
+    dest=/etc/systemd/system/xvfb.service
+
+- name: Enable xvfb.service
+  become: yes
+  service: name=xvfb enabled=yes state=started
+
 - name: add Google Linux repo signing key
   become: yes
   apt_key: id=7FAC5991
@@ -28,15 +37,7 @@
   become: yes
   copy: src=/tmp/chromedriver dest=/usr/local/bin/chromedriver mode=0755 remote_src=yes
 
-- name: expore display to allow selenium to work
+- name: export display to allow selenium to work
   lineinfile:
-    dest: "{{ user_home}}.profile"
+    dest: "{{ user_home }}.profile"
     line: "export DISPLAY=:99"
-
-# This is probably the wrong place for this,
-# it should be tied to systemd startup rather
-# than a profile thing *I think*.
-- name: start Xvfb on login
-  lineinfile:
-    dest: "{{ user_home}}.profile"
-    line: "Xvfb -ac :99 2>/dev/null &"
