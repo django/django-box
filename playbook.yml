@@ -1,7 +1,6 @@
 - name: Django Box
   vars:
     user_home: /home/vagrant/
-    num_executors: 1
     django_user: vagrant
   hosts: all
   roles:
