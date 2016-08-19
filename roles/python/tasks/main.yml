@@ -62,10 +62,23 @@
 
 - name: create virtual environments for each python
   pip:
-    requirements: "{{ user_home }}djangodata/requirements/py{{ item | int }}.txt"
+    requirements: "/django/tests/requirements/py{{ item | int }}.txt"
     virtualenv: "{{ user_home}}/.virtualenvs/py{{ item }}"
     virtualenv_python: "python{{ item }}"
   with_items: '{{ python_versions }}'
+
+- name: install database dependencies
+  pip:
+    requirements: "/django/tests/requirements/{{ item.1 }}.txt"
+    virtualenv: "{{ user_home}}/.virtualenvs/py{{ item.0 }}"
+    virtualenv_python: "python{{ item.0 }}"
+  with_nested:
+    - '{{ python_versions }}'
+    - [ 'postgres', 'mysql' ]
+
+- name: install tox for running other build tasks
+  pip: name=tox
+  become: yes
 
 - name: link test settings modules to each virtualenv
   file:
