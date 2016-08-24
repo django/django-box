@@ -26,27 +26,9 @@
   become: yes
   apt: pkg=python-setuptools
 
-- name: download pip
-  get_url: url=https://bootstrap.pypa.io/get-pip.py dest=/tmp
-
 - name: install pip
-  command: python{{ item }} /tmp/get-pip.py
   become: yes
-  with_items: '{{ python_versions }}'
-
-- name: install virtualenv
-  become: yes
-  pip: name=virtualenv
-
-- name: install wheel
-  become: yes
-  pip: name=wheel executable=pip{{ item }}
-  with_items: '{{ python_versions }}'
-
-- name: update setuptools
-  become: yes
-  pip: name=setuptools state=latest executable=pip{{ item }}
-  with_items: '{{ python_versions }}'
+  apt: pkg=python3-pip
 
 - name: install extra packages required by Python dependencies
   become: yes
@@ -55,47 +37,38 @@
     - libffi-dev   # for bcrypt
     - libjpeg-dev  # for Pillow
     - zlib1g-dev   # for Pillow
+    - git          # Tox executes git config
 
-- name: install virtualenvwrapper to allow workon shortcut
-  become: yes
-  apt: pkg=virtualenvwrapper
-
-- name: create virtual environments for each python
-  pip:
-    requirements: "/django/tests/requirements/py{{ item | int }}.txt"
-    virtualenv: "{{ user_home}}/.virtualenvs/py{{ item }}"
-    virtualenv_python: "python{{ item }}"
-  with_items: '{{ python_versions }}'
-
-- name: install database dependencies
-  pip:
-    requirements: "/django/tests/requirements/{{ item.1 }}.txt"
-    virtualenv: "{{ user_home}}/.virtualenvs/py{{ item.0 }}"
-    virtualenv_python: "python{{ item.0 }}"
-  with_nested:
-    - '{{ python_versions }}'
-    - [ 'postgres', 'mysql' ]
-
-- name: install tox for running other build tasks
-  pip: name=tox
+- name: install tox for running build tasks
+  pip: name=tox executable=pip3
   become: yes
 
-- name: link test settings modules to each virtualenv
-  file:
-    src: "{{ user_home }}djangodata/test_{{ item.1 }}.py"
-    dest: "{{ user_home }}.virtualenvs/py{{ item.0 }}/lib/python{{ item.0 }}/site-packages/test_{{ item.1 }}.py"
-    state: link
-  with_nested:
-    - '{{ python_versions }}'
-    - '{{ database_versions }}'
-
-- name: create aliases for executing tests on each python/database combination
+- name: create aliases for executing tests on regular database backends
   lineinfile:
     dest: "{{ user_home}}.profile"
     line: >
-        alias runtests{{ item.0 }}-{{ item.1 }}='PYTHONPATH=/django
-        {{ user_home }}/.virtualenvs/py{{ item.0 }}/bin/python
-        /django/tests/runtests.py --settings=test_{{ item.1 }}'
+        alias runtests{{ (10 * item.0)|round|int }}-{{ item.1 }}='PYTHONPATH=/home/vagrant/djangodata/
+        tox -c /django/tox.ini -e py{{ (10 * item.0)|round|int }}{{ ("-" + item.1)|replace("-sqlite3", "") }} --
+        --settings=test_{{ item.1 }}'
   with_nested:
     - '{{ python_versions }}'
-    - '{{ database_versions }}'
+    - '{{ databases }}'
+
+- name: create aliases for executing tests on GIS database backends
+  lineinfile:
+    dest: "{{ user_home}}.profile"
+    line: >
+        alias runtests{{ (10 * item.0)|round|int }}-{{ item.1 }}-gis='PYTHONPATH=/home/vagrant/djangodata/
+        tox -c /django/tox.ini -e py{{ (10 * item.0)|round|int }}{{ ("-" + item.1)|replace("-sqlite3", "") }} --
+        --settings=test_{{ item.1 }}_gis'
+  with_nested:
+    - '{{ python_versions }}'
+    - '{{ databases }}'
+
+- name: create aliases for non database tests
+  lineinfile:
+    dest: "{{ user_home}}.profile"
+    line: >
+        alias runtests-{{ item }}='PYTHONPATH=/home/vagrant/djangodata/
+        tox -c /django/tox.ini -e {{ item }} --'
+  with_items: [ 'flake8', 'isort', 'docs', 'javascript' ]

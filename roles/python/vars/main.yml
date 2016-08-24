@@ -3,10 +3,7 @@ python_versions:
   - 3.4
   - 3.5
 
-database_versions:
-  - mysql_gis
+databases:
   - mysql
-  - postgis 
   - postgres
-  - spatialite
   - sqlite3

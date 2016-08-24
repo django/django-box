@@ -6,24 +6,28 @@
 
 set -x  # To output the commands as they are run.
 
-runtests2.7-spatialite gis_tests
-runtests2.7-postgis gis_tests
-runtests2.7-sqlite3 auth_tests
-runtests2.7-postgres auth_tests
-runtests2.7-mysql auth_tests
+runtests27-sqlite3_gis gis_tests
+runtests27-postgres_gis gis_tests
+runtests27-mysql_gis gis_tests
+runtests27-sqlite3 auth_tests
+runtests27-postgres auth_tests
+runtests27-mysql auth_tests
 
-runtests3.4-spatialite gis_tests
-runtests3.4-postgis gis_tests
-runtests3.4-sqlite3 auth_tests
-runtests3.4-postgres auth_tests
-runtests3.4-mysql auth_tests
+runtests34-sqlite3_gis gis_tests
+runtests34-postgres_gis gis_tests
+runtests34-mysql_gis gis_tests
+runtests34-sqlite3 auth_tests
+runtests34-postgres auth_tests
+runtests34-mysql auth_tests
 
-runtests3.5-spatialite gis_tests
-runtests3.5-postgis gis_tests
-runtests3.5-sqlite3 auth_tests
-runtests3.5-postgres auth_tests
-runtests3.5-mysql auth_tests
+runtests35-sqlite3_gis gis_tests
+runtests35-postgres_gis gis_tests
+runtests35-mysql_gis gis_tests
+runtests35-sqlite3 auth_tests
+runtests35-postgres auth_tests
+runtests35-mysql auth_tests
 
-runtests2.7-sqlite3 admin_widgets --selenium chrome
+runtests27-sqlite3 admin_widgets --selenium chrome
+runtests-flake8
 
 set +x
