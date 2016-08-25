@@ -4,10 +4,10 @@
     django_user: vagrant
   hosts: all
   roles:
+    - system
     - browsers
     - djangodata
     - memcached
     - mysql
-    - ntp
     - postgres
     - python

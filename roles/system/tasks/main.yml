@@ -1,0 +1,7 @@
+- name: set locale
+  command: /usr/sbin/update-locale LANG={{ locale }} LC_ALL={{ locale }} LANGUAGE={{ locale }}
+  become: yes
+
+- name: install ntp for clock synchronization
+  become: yes
+  apt: pkg=ntp
