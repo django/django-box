@@ -54,3 +54,4 @@
   with_items:
     - npm
     - nodejs-legacy
+    - phantomjs

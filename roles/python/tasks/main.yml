@@ -43,6 +43,10 @@
   pip: name=tox executable=pip3
   become: yes
 
+- name: install sphinx for building docs
+  pip: name=Sphinx executable=pip3
+  become: yes
+
 - name: create aliases for executing tests on regular database backends
   lineinfile:
     dest: "{{ user_home}}.profile"
@@ -71,4 +75,4 @@
     line: >
         alias runtests-{{ item }}='PYTHONPATH=/home/vagrant/djangodata/
         tox -c /django/tox.ini -e {{ item }} --'
-  with_items: [ 'flake8', 'isort', 'docs', 'javascript' ]
+  with_items: [ 'flake8', 'isort', 'docs' ]
