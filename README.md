@@ -36,6 +36,10 @@ Setup the initial directory layout:
     (host) $ git clone git@github.com:django/django.git
     (host) $ git clone git@github.com:django/django-box.git
 
+It's important that django is cloned to a directory called `django` directly
+beside the `django-box` directory. This is because the virtual machine will
+mount `../django/`.
+
 Then, either:
 
 * If you have not already downloaded the box file separately, then run the
@@ -44,7 +48,7 @@ Then, either:
         (host) $ cd django-box
         (host) $ vagrant up
 
-  This will automatically download the VM, which is about _1.5GB_ in size (be
+  This will automatically download the VM, which is about _1.2GB_ in size (be
   warned if you have a low bandwitdh Internet connection) and then boot it up.
   The download will only occur the first time you run `vagrant up`, as the image
   is saved.
@@ -52,7 +56,7 @@ Then, either:
 * Or, if you have already downloaded the box file separately, then run the
   following command in order to import the box into vagrant and boot up the VM:
 
-        (host) $ vagrant box add django-box-1.10 path/to/django-box-1.10.box
+        (host) $ vagrant box add django-box-1.11 path/to/django-box-1.11.box
         (host) $ cd django-box
         (host) $ vagrant up
 
@@ -72,44 +76,41 @@ Once the VM is up and running, type the following command to SSH into the VM
 Once inside the VM, you can run the tests by typing any of the pre-defined
 aliases. For example:
 
-    (vm) $ runtests2.7-mysql
-    (vm) $ runtests3.4-spatialite gis_tests
-    (vm) $ runtests3.5-postgresql admin_widgets --selenium chrome,firefox
+    (vm) $ runtests27-mysql
+    (vm) $ runtests34-sqlite3-gis gis_tests
+    (vm) $ runtests35-postgres admin_widgets --selenium chrome
 
 Supported commands
 ------------------
 
 ```
-runtests2.7-mysql          runtests3.4-mysql          runtests3.5-mysql
-runtests2.7-mysql_gis      runtests3.4-mysql_gis      runtests3.5-mysql_gis
-runtests2.7-postgis        runtests3.4-postgis        runtests3.5-postgis
-runtests2.7-postgres       runtests3.4-postgres       runtests3.5-postgres
-runtests2.7-spatialite     runtests3.4-spatialite     runtests3.5-spatialite
-runtests2.7-sqlite3        runtests3.4-sqlite3        runtests3.5-sqlite3
+runtests27-mysql         runtests27-sqlite3-gis   runtests34-sqlite3       runtests35-postgres-gis  runtests-isort
+runtests27-mysql-gis     runtests34-mysql         runtests34-sqlite3-gis   runtests35-sqlite3
+runtests27-postgres      runtests34-mysql-gis     runtests35-mysql         runtests35-sqlite3-gis
+runtests27-postgres-gis  runtests34-postgres      runtests35-mysql-gis     runtests-docs
+runtests27-sqlite3       runtests34-postgres-gis  runtests35-postgres      runtests-flake8
 ```
 
 Building a new version
 ----------------------
 
 To upgrade or alter the original box, you'll need to recreate it. You'll need to
-have Ansible 2.1 or greater installed, and django in a folder beside the
+have Ansible 2.1 or greater installed, and django >= 1.11 in a folder beside the
 django-box project as described above.
 
 Make any required changes to the Ansible roles, and then create the box with:
 
-```
-VAGRANT_VAGRANTFILE=Vagrantfile-build vagrant up
-```
+    (host) $ VAGRANT_VAGRANTFILE=Vagrantfile-build vagrant up
 
-The automatic build process will take about an hour. If the new build should be
-saved, then you can package the output:
 
-```
-VAGRANT_VAGRANTFILE=Vagrantfile-build vagrant package \
-    --output django-box-DJANGO-VERSION.box
+The automatic build process will take about 20 minutes. If the new build should
+be saved, then you can package the output:
 
-vagrant box add django-box-DJANGO-VERSION.box --name django-box-DJANGO-VERSION
-```
+
+    (host) $ VAGRANT_VAGRANTFILE=Vagrantfile-build vagrant package \
+            --output django-box-1.11.box
+
+    (host) $ vagrant box add django-box-1.11.box --name django-box-1.11
 
 Notes about the VM configuration
 --------------------------------
@@ -120,28 +121,23 @@ code using your favorite editor from your host machine and run the tests from
 inside the VM. The repository clone for the django-box itself is also in a
 shared folder at `/vagrant`.
 
-`virtualenvwrapper` is installed so you may run, for example:
-
-    (vm) $ workon py3.5
-
 The test settings are available in `/home/vagrant/djangodata/test_*.py`. These
-files are available to each virtualenv via symlinks.
+files are put onto the `PYTHONPATH` when running the tests.
 
 Chrome is pre-installed so that Django's selenium tests can be run in headless
-mode in a virtual display (with the id `:99`). For example, you may run a
-specific test like so:
+mode with a virtual display (id `:99`). For example, you may run a specific test
+like so:
 
-    (vm) $ runtests2.7-sqlite3 admin_widgets --selenium chrome
+    (vm) $ runtests27-sqlite3 admin_widgets --selenium chrome
 
 Building the documentation
 --------------------------
 
-To build the documentation, simply activate one of the virtualenvs and run the
-Sphinx build command:
+To build the documentation, change to the docs directory and call a make task:
 
-    workon py2.7
-    cd /django/docs
-    make html
+
+    (vm) $ cd /django/docs
+    (vm) $ make html
 
 Vagrant command tips
 --------------------
