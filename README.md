@@ -139,6 +139,10 @@ To build the documentation, change to the docs directory and call a make task:
     (vm) $ cd /django/docs
     (vm) $ make html
 
+You can then view the docs in your browser on the host:
+
+    `(host) $ open django/docs/_build/html/index.html`
+
 Vagrant command tips
 --------------------
 
