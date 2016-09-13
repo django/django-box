@@ -2,8 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "django-box-1.11"
-  #config.vm.box_url = "https://www.djangoproject.com/m/vms/django-box-1.11.box"
+  config.vm.box = "djangoproject/django-box-1.11"
   config.vm.host_name = "djangobox"
   config.ssh.forward_agent = true
 
