@@ -21,8 +21,15 @@ Preparation
 ### Software installation
 
 First of all, you need to install the latest versions of
-[Vagrant](https://www.vagrantup.com/downloads.html) and
-[VirtualBox](https://www.virtualbox.org/wiki/Downloads) on your host machine.
+[Vagrant 1.8.5](https://www.vagrantup.com/downloads.html) and
+[VirtualBox 5.1.6](https://www.virtualbox.org/wiki/Downloads) on your host
+machine.
+
+If you use a version of VirtualBox that isn't 5.1.6 you may run into problems
+creating the NFS mount. You can either upgrade to VirtualBox 5.1.6, or you can
+try to install the [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest)
+plugin, which will attempt to install your local version of GuestAdditions into
+the VM.
 
 Booting the VM
 --------------
@@ -91,27 +98,6 @@ runtests27-postgres-gis  runtests34-postgres      runtests35-mysql-gis     runte
 runtests27-sqlite3       runtests34-postgres-gis  runtests35-postgres      runtests-flake8
 ```
 
-Building a new version
-----------------------
-
-To upgrade or alter the original box, you'll need to recreate it. You'll need to
-have Ansible 2.1 or greater installed, and django >= 1.11 in a folder beside the
-django-box project as described above.
-
-Make any required changes to the Ansible roles, and then create the box with:
-
-    (host) $ VAGRANT_VAGRANTFILE=Vagrantfile-build vagrant up
-
-
-The automatic build process will take about 20 minutes. If the new build should
-be saved, then you can package the output:
-
-
-    (host) $ VAGRANT_VAGRANTFILE=Vagrantfile-build vagrant package \
-            --output django-box-1.11.box
-
-    (host) $ vagrant box add django-box-1.11.box --name django-box-1.11
-
 Notes about the VM configuration
 --------------------------------
 
@@ -176,6 +162,30 @@ Vagrant command tips
     `(host) $ vagrant provision`
 
 - More information is available in the [Vagrant documentation](https://www.vagrantup.com/docs/).
+
+Building a new version
+----------------------
+
+To upgrade or alter the original box, you'll need to recreate it. You'll need to
+have Ansible 2.1 or greater installed, and django >= 1.11 in a folder beside the
+django-box project as described above. You should also have
+the [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest) plugin
+installed to ensure the correct GuestAdditions are configured within the image.
+
+Make any required changes to the Ansible roles, and then create the box with:
+
+    (host) $ VAGRANT_VAGRANTFILE=Vagrantfile-build vagrant up
+
+The automatic build process will take about 20 minutes. If the new build should
+be saved, then you can package the output:
+
+    (host) $ VAGRANT_VAGRANTFILE=Vagrantfile-build vagrant package \
+            --output django-box-1.11.box
+
+    (host) $ vagrant box add django-box-1.11.box --name django-box-1.11
+
+Note that compiling a new version should only be required when releasing a new
+build to atlas.hashicorp.com.
 
 Credits
 -------

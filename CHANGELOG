@@ -1,3 +1,11 @@
+1.11.1 - September 19, 2016
+===========================
+
+- Compiled box built with VirtualBox 5.1.6 with GuestAdditions 5.1.6
+- Fixes some NFS issues that were present using newer versions of VirtualBox
+  against GuestAdditions 5.0.20 in the previous box.
+- Updated documentation to present dependencies a little better.
+
 1.11 - Aug 25, 2016
 ==================
 
