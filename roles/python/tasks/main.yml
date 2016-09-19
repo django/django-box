@@ -38,6 +38,7 @@
     - libjpeg-dev  # for Pillow
     - zlib1g-dev   # for Pillow
     - git          # Tox executes git config
+    - libmemcached-dev  # for pylibmc
 
 - name: install tox for running build tasks
   pip: name=tox executable=pip3

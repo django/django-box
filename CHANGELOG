@@ -1,3 +1,9 @@
+1.11.2 - September 20, 2016
+===========================
+
+- Added support for pylibmc by building against a newer django commit,
+  and installing pylibmc dependencies.
+
 1.11.1 - September 19, 2016
 ===========================
 
