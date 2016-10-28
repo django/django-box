@@ -31,6 +31,10 @@ try to install the [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbgue
 plugin, which will attempt to install your local version of GuestAdditions into
 the VM.
 
+```
+vagrant plugin install vagrant-vbguest
+```
+
 Booting the VM
 --------------
 
@@ -71,6 +75,13 @@ Then, either:
   delete the file you've dowloaded if you'd like to save some space on your
   hard drive.
 
+  You can download the box file directly from (make sure you update the version
+  component):
+  https://atlas.hashicorp.com/djangoproject/boxes/django-box-1.11/versions/1.11.2/virtualbox.box
+
+  You can check what the latest released version is here:
+  https://atlas.hashicorp.com/djangoproject/boxes/django-box-1.11/
+
 As the VM boots up, it will prompt you to enter your host machine's
 administrator password (the same that you use for logging into your host
 machine). This is required so that Vagrant can setup the NFS shared folders.
@@ -97,6 +108,26 @@ runtests27-postgres      runtests34-mysql-gis     runtests35-mysql         runte
 runtests27-postgres-gis  runtests34-postgres      runtests35-mysql-gis     runtests-docs
 runtests27-sqlite3       runtests34-postgres-gis  runtests35-postgres      runtests-flake8
 ```
+
+Examples
+--------
+
+The commands above that target databases all accept arguments and flags
+consistent with the unit-tests documentation: https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/unit-tests/
+What this means is that you can still run these tests with `--keepdb` to improve
+testing performance, and target specific test modules.
+
+```bash
+# Run test modules related to expressions
+runtests35-postgres --keepdb -v 2 queries expressions lookup aggregation annotations
+
+# Run GIS tests
+runtests35-postgres-gis gis_tests
+
+# Run selenium tests against chrome driver (no firefox available yet)
+runtests27-sqlite3 admin_widgets --selenium chrome
+```
+
 
 Notes about the VM configuration
 --------------------------------
@@ -186,6 +217,14 @@ be saved, then you can package the output:
 
 Note that compiling a new version should only be required when releasing a new
 build to atlas.hashicorp.com.
+
+To upload the new image, logon to the `djangoproject` account on hashicorp atlas
+here: https://atlas.hashicorp.com/djangoproject.
+
+- Click through to the box you're updating
+- Create a new version, bumping the release version, and adding release notes
+- Create a new virtualbox provider for the new version
+- Upload the .box file generated from the packaging command above
 
 Credits
 -------
