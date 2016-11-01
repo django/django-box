@@ -77,7 +77,7 @@ Then, either:
 
   You can download the box file directly from (make sure you update the version
   component):
-  https://atlas.hashicorp.com/djangoproject/boxes/django-box-1.11/versions/1.11.2/virtualbox.box
+  https://atlas.hashicorp.com/djangoproject/boxes/django-box-1.11/versions/1.11.2/providers/virtualbox.box
 
   You can check what the latest released version is here:
   https://atlas.hashicorp.com/djangoproject/boxes/django-box-1.11/
