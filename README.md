@@ -67,7 +67,7 @@ Then, either:
 * Or, if you have already downloaded the box file separately, then run the
   following command in order to import the box into vagrant and boot up the VM:
 
-        (host) $ vagrant box add django-box-1.11 path/to/django-box-1.11.box
+        (host) $ vagrant box add djangoproject/django-box-1.11 path/to/django-box-1.11.box
         (host) $ cd django-box
         (host) $ vagrant up
 
