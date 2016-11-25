@@ -29,9 +29,13 @@
   become: yes
   apt: name=unzip state=present
 
+- name: get chromedriver version
+  uri: url=https://chromedriver.storage.googleapis.com/LATEST_RELEASE return_content=yes
+  register: chromedriver_version_file
+
 - name: download chromedriver
   become: yes
-  unarchive: src=https://chromedriver.storage.googleapis.com/{{ chromedriver_version }}/chromedriver_linux{{ ansible_userspace_bits }}.zip dest=/tmp copy=no
+  unarchive: src=https://chromedriver.storage.googleapis.com/{{ chromedriver_version_file.content|replace('\n','') }}/chromedriver_linux{{ ansible_userspace_bits }}.zip dest=/tmp copy=no
 
 - name: copy executable file for chromedriver
   become: yes
