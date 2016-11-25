@@ -55,3 +55,7 @@
     - npm
     - nodejs-legacy
     - phantomjs
+
+- name: install gettext
+  become: yes
+  apt: pkg=gettext
