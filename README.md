@@ -67,7 +67,7 @@ Then, either:
 * Or, if you have already downloaded the box file separately, then run the
   following command in order to import the box into vagrant and boot up the VM:
 
-        (host) $ vagrant box add djangoproject/django-box-1.11 path/to/django-box-1.11.box
+        (host) $ vagrant box add path/to/django-box-1.11.box --name djangoproject/django-box-1.11
         (host) $ cd django-box
         (host) $ vagrant up
 
@@ -213,7 +213,7 @@ be saved, then you can package the output:
     (host) $ VAGRANT_VAGRANTFILE=Vagrantfile-build vagrant package \
             --output django-box-1.11.box
 
-    (host) $ vagrant box add django-box-1.11.box --name django-box-1.11
+    (host) $ vagrant box add django-box-1.11.box --name djangoproject/django-box-1.11 # optional - for testing
 
 Note that compiling a new version should only be required when releasing a new
 build to atlas.hashicorp.com.
