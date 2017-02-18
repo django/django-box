@@ -41,7 +41,7 @@
     - libmemcached-dev  # for pylibmc
 
 - name: install tox for running build tasks
-  pip: name=tox executable=pip3
+  pip: name=tox==2.3.0 executable=pip3  # 2.4 -> 2.6 disabled PYTHONPATH support
   become: yes
 
 - name: install sphinx for building docs

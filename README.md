@@ -21,8 +21,8 @@ Preparation
 ### Software installation
 
 First of all, you need to install the latest versions of
-[Vagrant 1.8.5](https://www.vagrantup.com/downloads.html) and
-[VirtualBox 5.1.6](https://www.virtualbox.org/wiki/Downloads) on your host
+[Vagrant 1.9.1](https://www.vagrantup.com/downloads.html) and
+[VirtualBox 5.1.14](https://www.virtualbox.org/wiki/Downloads) on your host
 machine.
 
 If you use a version of VirtualBox that isn't 5.1.6 you may run into problems
@@ -94,7 +94,7 @@ Once the VM is up and running, type the following command to SSH into the VM
 Once inside the VM, you can run the tests by typing any of the pre-defined
 aliases. For example:
 
-    (vm) $ runtests27-mysql
+    (vm) $ runtests36-mysql
     (vm) $ runtests34-sqlite3-gis gis_tests
     (vm) $ runtests35-postgres admin_widgets --selenium chrome
 
@@ -102,11 +102,19 @@ Supported commands
 ------------------
 
 ```
-runtests27-mysql         runtests27-sqlite3-gis   runtests34-sqlite3       runtests35-postgres-gis  runtests-isort
-runtests27-mysql-gis     runtests34-mysql         runtests34-sqlite3-gis   runtests35-sqlite3
-runtests27-postgres      runtests34-mysql-gis     runtests35-mysql         runtests35-sqlite3-gis
-runtests27-postgres-gis  runtests34-postgres      runtests35-mysql-gis     runtests-docs
-runtests27-sqlite3       runtests34-postgres-gis  runtests35-postgres      runtests-flake8
+runtests-isort    runtests27-sqlite3        runtests34-sqlite3
+runtests-flake8   runtests27-sqlite3-gis    runtests34-sqlite3-gis
+runtests-docs     runtests27-mysql          runtests34-mysql
+                  runtests27-mysql-gis      runtests34-mysql-gis
+                  runtests27-postgres       runtests34-postgres
+                  runtests27-postgres-gis   runtests34-postgres-gis
+
+                  runtests35-sqlite3        runtests36-sqlite3
+                  runtests35-sqlite3-gis    runtests36-sqlite3-gis
+                  runtests35-mysql          runtests36-mysql
+                  runtests35-mysql-gis      runtests36-mysql-gis
+                  runtests35-postgres       runtests36-postgres
+                  runtests35-postgres-gis   runtests36-postgres-gis
 ```
 
 Examples
@@ -125,7 +133,7 @@ runtests35-postgres --keepdb -v 2 queries expressions lookup aggregation annotat
 runtests35-postgres-gis gis_tests
 
 # Run selenium tests against chrome driver (no firefox available yet)
-runtests27-sqlite3 admin_widgets --selenium chrome
+runtests36-sqlite3 admin_widgets --selenium chrome --parallel 1
 ```
 
 
@@ -145,7 +153,9 @@ Chrome is pre-installed so that Django's selenium tests can be run in headless
 mode with a virtual display (id `:99`). For example, you may run a specific test
 like so:
 
-    (vm) $ runtests27-sqlite3 admin_widgets --selenium chrome
+    (vm) $ runtests36-sqlite3 admin_widgets --selenium chrome --parallel 1
+
+The test suite will sometimes hang when running selenium tests in parallel mode.
 
 Building the documentation
 --------------------------

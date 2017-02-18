@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "djangoproject/django-box-1.11"
+  config.vm.box = "djangoproject/django-box-2.0"
   config.vm.host_name = "djangobox"
   config.ssh.forward_agent = true
 
