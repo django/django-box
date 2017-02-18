@@ -67,7 +67,7 @@ Then, either:
 * Or, if you have already downloaded the box file separately, then run the
   following command in order to import the box into vagrant and boot up the VM:
 
-        (host) $ vagrant box add path/to/django-box-1.11.box --name djangoproject/django-box-1.11
+        (host) $ vagrant box add path/to/django-box-2.0.box --name djangoproject/django-box-2.0
         (host) $ cd django-box
         (host) $ vagrant up
 
@@ -77,10 +77,10 @@ Then, either:
 
   You can download the box file directly from (make sure you update the version
   component):
-  https://atlas.hashicorp.com/djangoproject/boxes/django-box-1.11/versions/1.11.2/providers/virtualbox.box
+  https://atlas.hashicorp.com/djangoproject/boxes/django-box-2.0/versions/2.0.0/providers/virtualbox.box
 
   You can check what the latest released version is here:
-  https://atlas.hashicorp.com/djangoproject/boxes/django-box-1.11/
+  https://atlas.hashicorp.com/djangoproject/boxes/django-box-2.0/
 
 As the VM boots up, it will prompt you to enter your host machine's
 administrator password (the same that you use for logging into your host
@@ -208,7 +208,7 @@ Building a new version
 ----------------------
 
 To upgrade or alter the original box, you'll need to recreate it. You'll need to
-have Ansible 2.1 or greater installed, and django >= 1.11 in a folder beside the
+have Ansible 2.1 or greater installed, and django >= 2.0 in a folder beside the
 django-box project as described above. You should also have
 the [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest) plugin
 installed to ensure the correct GuestAdditions are configured within the image.
@@ -221,9 +221,9 @@ The automatic build process will take about 20 minutes. If the new build should
 be saved, then you can package the output:
 
     (host) $ VAGRANT_VAGRANTFILE=Vagrantfile-build vagrant package \
-            --output django-box-1.11.box
+            --output django-box-2.0.box
 
-    (host) $ vagrant box add django-box-1.11.box --name djangoproject/django-box-1.11 # optional - for testing
+    (host) $ vagrant box add django-box-2.0.box --name djangoproject/django-box-2.0 # optional - for testing
 
 Note that compiling a new version should only be required when releasing a new
 build to atlas.hashicorp.com.
