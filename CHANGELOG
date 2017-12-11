@@ -1,7 +1,15 @@
-n.n.n - Unreleased
-==================
+2.1.0 - January nn, 2018
+========================
 
-- Upgraded tox to 2.9.1, versions >= 2.7.0 can pass PYTHONPATH to test environments again
+- Upgraded tox to 2.9.1, versions >= 2.7.0 can pass PYTHONPATH to test
+  environments again
+- Updated URL of 'deadsnakes' old Python version PPA respository for Ubuntu
+- Renamed shell aliases so DB backend names in test commands are in sync with
+  Django CI Jenkins jobs
+- Removed Python 2.7 as per Django >= 2.0 Python version support timeline
+- Updated suggested versions of Vagrant and VirtualBox, clarify vbguest plugin
+  suggestion in README file
+- Added a couple of Linux host-specific trobleshooting notes to the README file
 
 2.0.0 - February 18, 2017
 =========================
