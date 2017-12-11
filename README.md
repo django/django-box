@@ -105,23 +105,16 @@ Once inside the VM, you can run the tests by typing any of the pre-defined
 aliases. For example:
 
     (vm) $ runtests36-mysql
-    (vm) $ runtests34-sqlite3-gis gis_tests
+    (vm) $ runtests35-sqlite3-gis gis_tests
     (vm) $ runtests35-postgres admin_widgets --selenium chrome
 
 Supported commands
 ------------------
 
 ```
-runtests-isort    runtests27-sqlite3        runtests34-sqlite3
-runtests-flake8   runtests27-sqlite3-gis    runtests34-sqlite3-gis
-runtests-docs     runtests27-mysql          runtests34-mysql
-                  runtests27-mysql-gis      runtests34-mysql-gis
-                  runtests27-postgres       runtests34-postgres
-                  runtests27-postgres-gis   runtests34-postgres-gis
-
-                  runtests35-sqlite3        runtests36-sqlite3
-                  runtests35-sqlite3-gis    runtests36-sqlite3-gis
-                  runtests35-mysql          runtests36-mysql
+runtests-isort    runtests35-sqlite3        runtests36-sqlite3
+runtests-flake8   runtests35-sqlite3-gis    runtests36-sqlite3-gis
+runtests-docs     runtests35-mysql          runtests36-mysql
                   runtests35-mysql-gis      runtests36-mysql-gis
                   runtests35-postgres       runtests36-postgres
                   runtests35-postgres-gis   runtests36-postgres-gis
