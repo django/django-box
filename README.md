@@ -117,6 +117,12 @@ runtests-docs     runtests27-mysql          runtests34-mysql
                   runtests35-postgis        runtests36-postgis
 ```
 
+Some of these names have changed in version 2.1 of django-box. Now they
+mirror the naming convention used in our Jenkins CI setup. i.e.
+`runtests3x-sqlite3-gis` is now `runtests3x-spatialite`,
+`runtest3x-postgres-gis` is now `runtests3x-postgis` and
+`runtest3x-mysql-gis` is now `runtests3x-mysql_gis`.
+
 Examples
 --------
 
