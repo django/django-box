@@ -1,10 +1,11 @@
 python_versions:
-  - 2.7
-  - 3.4
   - 3.5
   - 3.6
 
-databases:
-  - mysql
-  - postgres
-  - sqlite3
+database_config:
+  - { jenkins_runner: 'mysql', tox_env_factor: 'mysql' }
+  - { jenkins_runner: 'mysql_gis', tox_env_factor: 'mysql' }
+  - { jenkins_runner: 'postgres', tox_env_factor: 'postgres' }
+  - { jenkins_runner: 'postgis',  tox_env_factor: 'postgres' }
+  - { jenkins_runner: 'sqlite3', tox_env_factor: 'sqlite3' }
+  - { jenkins_runner: 'spatialite', tox_env_factor: 'sqlite3' }

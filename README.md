@@ -95,7 +95,7 @@ Once inside the VM, you can run the tests by typing any of the pre-defined
 aliases. For example:
 
     (vm) $ runtests36-mysql
-    (vm) $ runtests34-sqlite3-gis gis_tests
+    (vm) $ runtests34-spatialite gis_tests
     (vm) $ runtests35-postgres admin_widgets --selenium chrome
 
 Supported commands
@@ -103,18 +103,18 @@ Supported commands
 
 ```
 runtests-isort    runtests27-sqlite3        runtests34-sqlite3
-runtests-flake8   runtests27-sqlite3-gis    runtests34-sqlite3-gis
+runtests-flake8   runtests27-spatialite     runtests34-spatialite
 runtests-docs     runtests27-mysql          runtests34-mysql
-                  runtests27-mysql-gis      runtests34-mysql-gis
+                  runtests27-mysql_gis      runtests34-mysql_gis
                   runtests27-postgres       runtests34-postgres
-                  runtests27-postgres-gis   runtests34-postgres-gis
+                  runtests27-postgis        runtests34-postgis
 
                   runtests35-sqlite3        runtests36-sqlite3
-                  runtests35-sqlite3-gis    runtests36-sqlite3-gis
+                  runtests35-spatialite     runtests36-spatialite
                   runtests35-mysql          runtests36-mysql
-                  runtests35-mysql-gis      runtests36-mysql-gis
+                  runtests35-mysql_gis      runtests36-mysql_gis
                   runtests35-postgres       runtests36-postgres
-                  runtests35-postgres-gis   runtests36-postgres-gis
+                  runtests35-postgis        runtests36-postgis
 ```
 
 Examples
@@ -130,7 +130,7 @@ testing performance, and target specific test modules.
 runtests35-postgres --keepdb -v 2 queries expressions lookup aggregation annotations
 
 # Run GIS tests
-runtests35-postgres-gis gis_tests
+runtests35-postgis gis_tests
 
 # Run selenium tests against chrome driver (no firefox available yet)
 runtests36-sqlite3 admin_widgets --selenium chrome --parallel 1
