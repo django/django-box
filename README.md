@@ -43,6 +43,7 @@ creating the NFS mount. You can either
   plugin, which will attempt to install your local version of GuestAdditions
   into the VM:
 
+      vagrant plugin install vagrant-share
       vagrant plugin install vagrant-vbguest
 
 Booting the VM
