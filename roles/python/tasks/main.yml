@@ -48,27 +48,16 @@
   pip: name=Sphinx executable=pip3
   become: yes
 
-- name: create aliases for executing tests on regular database backends
+- name: create aliases for executing tests on regular and GIS database backends
   lineinfile:
     dest: "{{ user_home}}.profile"
     line: >
-        alias runtests{{ (10 * item.0)|round|int }}-{{ item.1 }}='PYTHONPATH=/home/vagrant/djangodata/
-        tox -c /django/tox.ini -e py{{ (10 * item.0)|round|int }}{{ ("-" + item.1)|replace("-sqlite3", "") }} --
-        --settings=test_{{ item.1 }}'
+        alias runtests{{ item.0|replace('.', '') }}-{{ item.1["jenkins_runner"] }}='PYTHONPATH=/home/vagrant/djangodata/
+        tox -c /django/tox.ini -e py{{ item.0|replace(".", "") }}{{ item.1["tox_env_factor"] }} --
+        --settings=test_{{ item.1["jenkins_runner"] }}'
   with_nested:
     - '{{ python_versions }}'
-    - '{{ databases }}'
-
-- name: create aliases for executing tests on GIS database backends
-  lineinfile:
-    dest: "{{ user_home}}.profile"
-    line: >
-        alias runtests{{ (10 * item.0)|round|int }}-{{ item.1 }}-gis='PYTHONPATH=/home/vagrant/djangodata/
-        tox -c /django/tox.ini -e py{{ (10 * item.0)|round|int }}{{ ("-" + item.1)|replace("-sqlite3", "") }} --
-        --settings=test_{{ item.1 }}_gis'
-  with_nested:
-    - '{{ python_versions }}'
-    - '{{ databases }}'
+    - '{{ database_config }}'
 
 - name: create aliases for non database tests
   lineinfile:
