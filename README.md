@@ -25,15 +25,25 @@ First of all, you need to install the latest versions of
 now) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads) (currently at
 version 5.2.4) on your host machine.
 
-If you use a version of VirtualBox that isn't 5.1.6 or newer you may run into
-problems creating the NFS mount. You can either upgrade VirtualBox, or you can
-try to install the [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest)
-plugin, which will attempt to install your local version of GuestAdditions into
-the VM.
+If you use Linux, you'll need to ensure proper support for NFS installed so the
+Vagrant shared folders feature works. On Debian/ubuntu systems this can be
+achieved with:
 
-```
-vagrant plugin install vagrant-vbguest
-```
+    $ sudo apt-get install nfs-kernel-server
+
+On Fedora/CentOS systems you'll need to execute something like:
+
+    $ sudo dnf install nfs-utils && sudo systemctl enable nfs-server
+
+If you use a version of VirtualBox that isn't 5.1.6 you may run into problems
+creating the NFS mount. You can either
+
+* Upgrade to VirtualBox 5.2.4
+* Or you can try to install the [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest)
+  plugin, which will attempt to install your local version of GuestAdditions
+  into the VM:
+
+      vagrant plugin install vagrant-vbguest
 
 Booting the VM
 --------------
@@ -156,6 +166,39 @@ like so:
     (vm) $ runtests36-sqlite3 admin_widgets --selenium chrome --parallel 1
 
 The test suite will sometimes hang when running selenium tests in parallel mode.
+
+Troubleshooting
+---------------
+
+### Strange errors when running tests
+
+The `tox.ini` configuration file shipped with the Django source code directs
+tox to create the virtual environments it uses for every test matrix
+configuration below a `.tox` directory it creates on the Django source code top
+directory.
+
+django-box reuses Django's tox configuration, but executes tox inside the VM,
+so that `.tox/` tree gets persisted between test runs and shared between a tox
+copy you could use on the host and the django-box tox.
+
+So it might happen than when faced with a mismatch between the version of Python
+used to create a virtual environment and the version currently in use to run
+the tests (e.g. Python micro version gets upgraded from 3.6.3 to 3.6.4 and this
+upgrade reaches your Linux host and/or the repositories used by the django-box
+VM), weird errors happen.
+
+You can solve this by removing the virtualenv tree, e.g.:
+
+    (host) $ rm -rf <Django souce code top dir>/.tox/py36-mysql
+    (vm) $ rm -rf /django/.tox/py36-mysql
+
+or more drastically, removing the `.tox` directory:
+
+    (host) $ rm -rf <Django souce code top dir>/.tox
+    (vm) $ rm -rf /django/.tox
+
+This way the next time you run the tests, tox will rebuild the virtual
+environment anew with the correct version of Python.
 
 Building the documentation
 --------------------------
