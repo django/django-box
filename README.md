@@ -35,7 +35,7 @@ On Fedora/CentOS systems you'll need to execute something like:
 
     $ sudo dnf install nfs-utils && sudo systemctl enable nfs-server
 
-If you use a version of VirtualBox that isn't 5.1.6 you may run into problems
+If you use a version of VirtualBox that isn't 5.2.4 you may run into problems
 creating the NFS mount. You can either
 
 * Upgrade to VirtualBox 5.2.4
