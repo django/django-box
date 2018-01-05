@@ -88,10 +88,10 @@ Then, either:
 
   You can download the box file directly from (make sure you update the version
   component):
-  https://atlas.hashicorp.com/djangoproject/boxes/django-box-2.1/versions/2.1.0/providers/virtualbox.box
+  https://app.vagrantup.com/djangoproject/boxes/django-box-2.1/versions/1.0.0/providers/
 
   You can check what the latest released version is here:
-  https://atlas.hashicorp.com/djangoproject/boxes/django-box-2.1/
+  https://app.vagrantup.com/djangoproject/boxes/django-box-2.1/
 
 As the VM boots up, it will prompt you to enter your host machine's
 administrator password (the same that you use for logging into your host
@@ -269,10 +269,10 @@ be saved, then you can package the output:
     (host) $ vagrant box add django-box-2.1.box --name djangoproject/django-box-2.1 # optional - for testing
 
 Note that compiling a new version should only be required when releasing a new
-build to atlas.hashicorp.com.
+build to app.vagrantup.com.
 
-To upload the new image, logon to the `djangoproject` account on hashicorp atlas
-here: https://atlas.hashicorp.com/djangoproject.
+To upload the new image, logon to the `djangoproject` account on vagrantup
+here: https://app.vagrantup.com/djangoproject.
 
 - Click through to the box you're updating
 - Create a new version, bumping the release version, and adding release notes
