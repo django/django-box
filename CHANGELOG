@@ -10,6 +10,7 @@
 - Updated suggested versions of Vagrant and VirtualBox, clarify vbguest plugin
   suggestion in README file
 - Added a couple of Linux host-specific trobleshooting notes to the README file
+- Rebuilt with `bento/ubuntu-16.04` at version `201801.02.0`
 
 2.0.0 - February 18, 2017
 =========================

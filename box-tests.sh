@@ -7,13 +7,6 @@
 set -x  # To output the commands as they are run.
 date -Is
 
-runtests34-spatialite gis_tests
-runtests34-postgis gis_tests
-runtests34-mysql_gis gis_tests
-runtests34-sqlite3 auth_tests
-runtests34-postgres auth_tests
-runtests34-mysql auth_tests
-
 runtests35-spatialite gis_tests
 runtests35-postgis gis_tests
 runtests35-mysql_gis gis_tests
