@@ -3,6 +3,10 @@ django-box: A virtual machine for running the Django core test suite
 
 Forked from djangocore-box (https://github.com/jphalip/djangocore-box)
 
+**Django Version Support**: 2.1
+
+**Release**: https://app.vagrantup.com/djangoproject/boxes/django-box-2.1
+
 The django-box is a virtual machine (VM), based on Ubuntu 16.04, containing all
 the programs and libraries required for running the Django core test suite in
 multiple different environments.
